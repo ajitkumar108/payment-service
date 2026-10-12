@@ -1,21 +1,22 @@
 package com.example.payment_service.kafka;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import com.example.payment_service.events.OrderSagaEvent;
-
-@Component 
+@Component
 public class PaymentEventConsumer {
-    @KafkaListener (topics = "payment-requests",
-                    groupId = "payment-group"
+
+    @KafkaListener(
+            topics = "payment-requests",
+            groupId = "payment-group-debug"
     )
-    public void consume(OrderSagaEvent event){
-        System.out.println("=======================");
-        System.out.println("PAYMENT REQUEST RECIEVED");
-        System.out.println("sagaId : " + event.getSagaId());
-        System.out.println("orderId : " + event.getOrderId());
-        System.out.println("eventType : " + event.getEventType());
-        System.out.println("========================");
+    public void consume(ConsumerRecord<?, ?> record) {
+
+        System.out.println("********************************");
+        System.out.println("TOPIC  : " + record.topic());
+        System.out.println("OFFSET : " + record.offset());
+        System.out.println("VALUE  : " + record.value());
+        System.out.println("********************************");
     }
 }
