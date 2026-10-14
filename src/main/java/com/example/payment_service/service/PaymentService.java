@@ -19,6 +19,16 @@ public class PaymentService {
 
     public Payment processPayment(OrderSagaEvent event) {
 
+        BigDecimal amount = new BigDecimal(event.getPayload()
+                                .get("amount")
+                                .toString()
+                            );
+
+
+            if(amount.compareTo(new BigDecimal("5000")) > 0){
+                throw new RuntimeException("Payment Failed");
+            }
+
         Payment payment = Payment.builder()
                 .orderId(event.getOrderId())
                 .sagaId(event.getSagaId())

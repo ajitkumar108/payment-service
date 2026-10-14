@@ -28,4 +28,19 @@ public class PaymentEventProducer {
 
         System.out.println("PAYMENT_COMPLETED Event Published");
     }
+
+    public void publishPaymentFailed(OrderSagaEvent event){
+    OrderSagaEvent failedEvent = 
+                    OrderSagaEvent.builder()
+                            .sagaId(event.getSagaId())
+                            .orderId(event.getOrderId())
+                            .eventType("PAYMENT_FAILED")
+                            .timestamp(java.time.LocalDateTime.now())
+                            .payload(event.getPayload())
+                            .build();
+
+        kafakaTemplate.send(PAYMENT_RESPONSE_TOPIC, failedEvent);
+
+        System.out.println("PAYMENT_FAILED Event Published");
+    }
 }

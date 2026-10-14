@@ -22,16 +22,15 @@ public class PaymentEventConsumer {
     )
     public void consume(OrderSagaEvent event) {
 
-        System.out.println("********************************");
-        System.out.println("EVENT RECEIVED");
-        System.out.println("SagaId  : " + event.getSagaId());
-        System.out.println("OrderId : " + event.getOrderId());
-        System.out.println("Type    : " + event.getEventType());
-        System.out.println("Payload : " + event.getPayload());
-        System.out.println("********************************");
+        try {
+            paymentService.processPayment(event);
 
-        paymentService.processPayment(event);
+            paymentEventProducer.publishPaymentCompleted(event);
+        } catch (Exception e) {
+            // TODO: handle exception
+            paymentEventProducer.publishPaymentFailed(event);
 
-        paymentEventProducer.publishPaymentCompleted(event);
+            System.out.println("PAYMENT FAILED : " + e.getMessage());
+        }
     }
 }
